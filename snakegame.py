@@ -1,7 +1,6 @@
-import time
-
 import pygame
 import random
+import time
 
 snake_speed = 15
 window_x = 720
@@ -11,6 +10,7 @@ white = pygame.Color(255, 255, 255)
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
+lightblue = pygame.Color(128, 128, 128)
 pygame.init()
 pygame.display.set_caption('Snake Game')
 game_window = pygame.display.set_mode((window_x, window_y))
@@ -27,35 +27,61 @@ direction = 'RIGHT'
 change_to = direction
 score = 0
 
-def drawGrid():
-    blockSize = 20 #Set the size of the grid block
-    for x in range(0, window_x, blockSize):
-        for y in range(0, window_y, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(game_window, white, rect, 1)
+
+def drawgrid():
+    blocksize = 10  # Set the size of the grid block
+    for x in range(0, window_x, blocksize):
+        for y in range(0, window_y, blocksize):
+            rect = pygame.Rect(x, y, blocksize, blocksize)
+            pygame.draw.rect(game_window, lightblue, rect, 1)
+
 
 def show_score(color, font, size):
     score_font = pygame.font.SysFont(font, size)
-    score_surface = score_font.render("Score : " + str(score), True, color)
+    score_surface = score_font.render("Score : " + str(score) + '  Highscore:    ' + str(gethighscore()), True, color)
     score_rect = score_surface.get_rect()
     game_window.blit(score_surface, score_rect)
 
 
 def game_over():
-    my_font = pygame.font.SysFont('arial', 50)
-    game_over_surface = my_font.render(
-        "Your Score is : " + str(score), True, red)
+    last = gethighscore()
+    my_font = pygame.font.SysFont('arial', 40)
+
+    if score > last:
+        game_over_surface = my_font.render(
+            "New Highscore!! Your Score is : " + str(score), True, red)
+    else:
+        game_over_surface = my_font.render(
+            "Your Score is : " + str(score) + '\n Current Highscore :   ' + str(last), True, red)
     game_over_rect = game_over_surface.get_rect()
     game_over_rect.midtop = (window_x / 2, window_y / 4)
     game_window.blit(game_over_surface, game_over_rect)
     pygame.display.flip()
-    time.sleep(2)
+    updatefile()
+    time.sleep(20)
     pygame.quit()
     quit()
 
 
+def updatefile():
+    f = open('scores.txt', 'r')
+    file = f.readlines()
+    last = int(file[0])
+
+    if last < int(score):
+        f.close()
+        file = open('scores.txt', 'w')
+        file.write(str(score))
+
+
+def gethighscore():
+    f = open('scores.txt', 'r')
+    file = f.readlines()
+    return int(file[0])
+
+
 while True:
-    drawGrid()
+
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
@@ -87,7 +113,7 @@ while True:
 
     snake_body.insert(0, list(snake_position))
 
-    if snake_position[0] == fruit_position[0] and snake_position [1] == fruit_position[1]:
+    if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1]:
         score += 10
         fruit_spawn = False
     else:
@@ -102,23 +128,23 @@ while True:
         if score < 51:
             pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
             snake_speed = 10
-        elif score > 50 and score < 101:
+        elif 50 < score < 101:
             pygame.draw.rect(game_window, red, pygame.Rect(pos[0], pos[1], 10, 10))
             snake_speed = 20
-        elif score > 100 and score < 151:
+        elif 100 < score < 151:
             pygame.draw.rect(game_window, blue, pygame.Rect(pos[0], pos[1], 10, 10))
             snake_speed = 30
-    pygame.draw.rect(game_window,white,pygame.Rect(fruit_position[0], fruit_position[1], 10, 10))
+    pygame.draw.rect(game_window, white, pygame.Rect(fruit_position[0], fruit_position[1], 10, 10))
 
-    if snake_position[0] < 0 or snake_position[0]> window_x - 10:
+    if snake_position[0] < 0 or snake_position[0] > window_x - 10:
         game_over()
-    if snake_position[1] < 0 or snake_position[1]> window_y - 10:
+    if snake_position[1] < 0 or snake_position[1] > window_y - 10:
         game_over()
 
     for block in snake_body[1:]:
         if snake_position[0] == block[0] and snake_position[1] == block[1]:
             game_over()
-
+    drawgrid()
     show_score(white, 'arial', 20)
 
     pygame.display.update()

@@ -1,5 +1,6 @@
-#from random import randint
+# from random import randint
 import random
+
 exitchoice = ""
 while exitchoice != "EXIT":
     print("You are in a dark school hallway.")
@@ -14,8 +15,9 @@ while exitchoice != "EXIT":
         print("In this classroom, you find an angry teacher! She gave you an F-! ")
         print("Game Over! You lost! :( ")
     elif door == "4":
-        dragondoor = input("You found a sleeping dragon. You can try to steal its gold (1), or sneak around it (2). 1/2: ")
-        randnum = random.randint(1,2)
+        dragondoor = input(
+            "You found a sleeping dragon. You can try to steal its gold (1), or sneak around it (2). 1/2: ")
+        randnum = random.randint(1, 2)
         if dragondoor == randnum and dragondoor == 1:
             print("You successfully stole the gold!")
             print("Congrats! You won!")
@@ -30,7 +32,7 @@ while exitchoice != "EXIT":
     elif door == "5":
         print("You enter a room with a sphinx. It asks you to guess the number its thinking of.")
         number = int(input("Guess the number between 1 and 10: "))
-        if number == random.randint(1,10):
+        if number == random.randint(1, 10):
             print("The sphinx tells you your guess was correct! She let you go!")
             print("Congrats! You won!")
         else:

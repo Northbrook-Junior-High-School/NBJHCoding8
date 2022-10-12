@@ -1,4 +1,5 @@
 from turtle import *
+
 speed(100)
 hideturtle()
 penup()

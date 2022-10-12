@@ -1,4 +1,5 @@
 from turtle import *
+
 penup()
 goto(0, -75)
 pendown()
